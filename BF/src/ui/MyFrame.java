@@ -200,7 +200,6 @@ public class MyFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// if(e.getActionCommand()==){
-				System.out.println("one");
 				for (int i = 0; i < fileList.length; i++) {
 					if (e.getActionCommand().equals(fileList[i])) {
 						try {
@@ -297,17 +296,15 @@ public class MyFrame {
 				}
 				for (String version : versions) {
 					JMenuItem versionItem = new JMenuItem(version);
-					versionmenu.add(version);
+					versionmenu.add(versionItem);
 					versionItem.addActionListener(new versionListListener());
 				}
 				mainFrame.repaint();
 			}
 		}
-
 		@Override
 		public void menuCanceled(MenuEvent e) {
 		}
-
 		@Override
 		public void menuDeselected(MenuEvent e) {
 			versionmenu.removeAll();
@@ -317,7 +314,6 @@ public class MyFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String cmd = e.getActionCommand();
-				System.out.println(cmd);
 				for (int i = 0; i < versions.length; i++) {
 					if (cmd.equals(versions[i])) {
 						try {

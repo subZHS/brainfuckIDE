@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
 
 import rmi.RemoteHelper;
 
-
+//老师写的代码，并没有用到
 public class MainFrame extends JFrame {
 	private JTextArea textArea;
 	private JLabel resultLabel;
