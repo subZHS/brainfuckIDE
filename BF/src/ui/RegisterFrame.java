@@ -15,6 +15,12 @@ public class RegisterFrame{
 	JTextField nameField;
 	JButton registerButton,cancelButton;
 	
+	public void close(){
+		registerFrame.dispose();
+	}
+	public void fresh(){
+		registerFrame.repaint();
+	}
 	public void go(){
 		registerFrame=new JFrame("Register");
 		registerFrame.setLocation(450,250);

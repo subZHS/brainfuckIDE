@@ -18,6 +18,14 @@ public class LoginFrame {
 	JTextField namefield;
 	JButton loginButton, registerButton, cancelButton;
 
+	public void close(){
+		loginFrame.dispose();
+	}
+	
+	public void fresh(){
+		close();
+		go();
+	}
 
 	public void go() {
 		loginFrame = new JFrame("Log In");
@@ -123,7 +131,7 @@ public class LoginFrame {
 				MyFrame myframe=new MyFrame();
 				myframe.go();
 				myframe.usernamelabel.setText(username);
-				myframe.mainFrame.repaint();
+				myframe.fresh();
 			}else{
 				namefield.setText("failed, try again");
 				passwordField.setText("");

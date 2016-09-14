@@ -27,6 +27,12 @@ public class NewaFileFrame{
 		this.username=username;
 	}
 
+	public void close(){
+		newFileFrame.dispose();
+	}
+	public void fresh(){
+		newFileFrame.repaint();
+	}
 	
 	protected void go() {
 		newFileFrame = new JFrame("new a file");

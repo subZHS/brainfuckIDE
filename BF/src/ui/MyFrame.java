@@ -7,18 +7,34 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
 import rmi.RemoteHelper;
 
 public class MyFrame {
 
 	JFrame mainFrame;
-	JMenu versionmenu, usermenu, filemenu, runmenu, functionmenu, openItem;
-	JMenuItem newItem, saveItem, exitItem, executeItem, registerItem, logoutItem, redoItem, undoItem;
+	JMenu versionmenu, usermenu, filemenu, runmenu, openItem;
+	JMenuItem newItem, saveItem, exitItem, executeItem, registerItem, logoutItem;
 	JLabel usernamelabel, filenamelabel;
 	JTextArea codeArea;
 	JTextArea inputArea;
 	JTextArea outputArea;
-	codeKeyListener codelistener=new codeKeyListener();
+
+	public void close() {
+		mainFrame.dispose();
+	}
+
+	public void fresh() {
+		mainFrame.repaint();
+	}
+
+	public void setUserName(String username) {
+		usernamelabel.setText(username);
+	}
+
+	public void setfilename(String filename) {
+		filenamelabel.setText(filename);
+	}
 
 	public void go() {
 		mainFrame = new JFrame("BF client");
@@ -30,8 +46,6 @@ public class MyFrame {
 		menuBar.add(runmenu);
 		versionmenu = new JMenu("Version");
 		menuBar.add(versionmenu);
-		functionmenu = new JMenu("Function");
-		menuBar.add(functionmenu);
 
 		usermenu = new JMenu();
 		ImageIcon userImage = new ImageIcon("image/userImage.png");
@@ -41,17 +55,12 @@ public class MyFrame {
 
 		registerItem = new JMenuItem("Register");
 		logoutItem = new JMenuItem("Log out");
-		undoItem = new JMenuItem("undo");
-		redoItem = new JMenuItem("redo");
 		usernamelabel = new JLabel("  unsigned");
 		filenamelabel = new JLabel("filename");
 
-		functionmenu.add(undoItem);
-		functionmenu.add(redoItem);
 		usermenu.add(logoutItem);
 		usermenu.add(registerItem);
 
-		menuBar.add(functionmenu);
 		menuBar.add(usermenu);
 		menuBar.add(usernamelabel);
 		JLabel breaaklabel = new JLabel("  :  ");
@@ -73,8 +82,6 @@ public class MyFrame {
 		exitItem.addActionListener(new ExitItemActionListener());
 		executeItem.addActionListener(new ExecuteItemActionListener());
 		versionmenu.addMenuListener(new VersionmenuListener());
-		undoItem.addActionListener(codelistener.new undoActionListener());
-		redoItem.addActionListener(codelistener.new redoActionListener());
 		logoutItem.addActionListener(new LogoutActionListener());
 		registerItem.addActionListener(new RegisterActionListener());
 
@@ -88,7 +95,6 @@ public class MyFrame {
 		codeArea.setLineWrap(true);
 		codeArea.setEditable(false);
 		JScrollPane codescroller = new JScrollPane(codeArea);
-		codeArea.addKeyListener(codelistener);
 
 		JPanel ioPanel = new JPanel();
 		ioPanel.setLayout(new BorderLayout());
@@ -177,7 +183,6 @@ public class MyFrame {
 					openItem.add(filenameItem);
 					filenameItem.addActionListener(new filelistListener());
 				}
-				codelistener = new codeKeyListener();
 				mainFrame.repaint();
 			}
 		}
@@ -297,11 +302,9 @@ public class MyFrame {
 				mainFrame.repaint();
 			}
 		}
-
 		@Override
 		public void menuCanceled(MenuEvent e) {
 		}
-
 		@Override
 		public void menuDeselected(MenuEvent e) {
 			versionmenu.removeAll();
@@ -321,92 +324,6 @@ public class MyFrame {
 						} catch (RemoteException e1) {
 							e1.printStackTrace();
 						}
-					}
-				}
-			}
-		}
-	}
-
-	class codeKeyListener implements KeyListener {
-
-		ArrayList<String> strlist = new ArrayList<String>(15);
-		ArrayList<KeyEvent> keyList = new ArrayList<KeyEvent>(50);
-
-		@Override
-		public void keyPressed(KeyEvent arg0) {
-			if (strlist.size() == 14) {
-				strlist.remove(0);
-			}
-			if (keyList.size() == 49) {
-				strlist.remove(0);
-			}
-			keyList.add(arg0);
-			if (keyList.indexOf(arg0) == 0) {
-				strlist.add(codeArea.getText());
-			}
-			// 删除文字的时候
-			if (arg0.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-				if (keyList.size() != 1 && keyList.get(keyList.size() - 2).getKeyChar() != KeyEvent.VK_BACK_SPACE) {
-					strlist.add(codeArea.getText());
-				}
-			}
-			if (arg0.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
-				if (keyList.size() != 1 && keyList.get(keyList.size() - 2).getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-					strlist.add(codeArea.getText());
-				}
-			}
-			// 粘贴的时候
-			if (arg0.getKeyCode() == KeyEvent.VK_V && arg0.isControlDown()) {
-				strlist.add(codeArea.getText());
-			}
-			// 剪切的时候
-			if (arg0.getKeyCode() == KeyEvent.VK_X && arg0.isControlDown()) {
-				strlist.add(codeArea.getText());
-			}
-
-		}
-
-		@Override
-		public void keyReleased(KeyEvent arg0) {
-		}
-
-		@Override
-		public void keyTyped(KeyEvent arg0) {
-		}
-
-		public class undoActionListener implements ActionListener {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				int index = strlist.indexOf(codeArea.getText());
-				if (index == -1) {
-					strlist.add(codeArea.getText());
-					codeArea.setText(strlist.get(strlist.size() - 2));
-					return;
-				}
-				for (int i = strlist.size() - 1; i >= 0; i--) {
-					String str = strlist.get(i);
-					if (str.equals(codeArea.getText())) {
-						if (i > 0) {
-							codeArea.setText(strlist.get(i - 1));
-						}
-						break;
-					}
-				}
-			}
-
-		}
-
-		public class redoActionListener implements ActionListener {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				for (int i = strlist.size() - 1; i >= 0; i--) {
-					String str = strlist.get(i);
-					if (str.equals(codeArea.getText())) {
-						if (i != strlist.size() - 1) {
-							codeArea.setText(strlist.get(i + 1));
-						}
-						break;
 					}
 				}
 			}
